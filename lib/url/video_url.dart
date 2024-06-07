@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/link.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:studyguide_flutter/url/video_parse.dart';
 import 'package:studyguide_flutter/profile/creator_profile.dart';
+import 'package:studyguide_flutter/video/video_player.dart';
 
 class YouTubeVideo {
   final String title;
@@ -36,7 +36,21 @@ Widget buildLinkItem(String videoUrl) {
             } else {
               final video = snapshot.data!;
               return InkWell(
-                onTap: openLink,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VideoPage(
+                        videoUrl: videoUrl,
+                        title: video.title,
+                        thumbnailUrl: video.thumbnailUrl,
+                        viewCount: video.viewCount,
+                        channelTitle: video.channelTitle,
+                        channelThumbnailUrl: video.channelThumbnailUrl,
+                      ),
+                    ),
+                  );
+                },
                 onLongPress: () {
                   showDialog(
                     context: ctx,

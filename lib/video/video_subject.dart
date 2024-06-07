@@ -54,7 +54,11 @@ class VideoSubjectPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => VideoSearchPage(searchQuery: query),
+                      builder: (context) => VideoSearchPage(
+                        searchQuery: query,
+                        email: email,
+                        id: id,
+                      ),
                     ),
                   );
                 },
@@ -64,6 +68,8 @@ class VideoSubjectPage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              Text(id),
+              const SizedBox(width: 5),
               Padding(
                 padding: const EdgeInsets.only(right: 20),
                 child: CircleAvatar(

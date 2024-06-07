@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:studyguide_flutter/user/signup.dart';
 import 'package:studyguide_flutter/video/video_subject.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,9 +33,6 @@ class _LoginPageState extends State<LoginPage> {
   final _idController = TextEditingController();
   final _passwordController = TextEditingController();
   final _auth = FirebaseAuth.instance;
-
-  // ignore: unused_field
-  String _errorMessage = '';
 
   @override
   void initState() {
@@ -110,9 +106,6 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text.trim(),
       );
       print("User signed in: ${userCredential.user}");
-      setState(() {
-        _errorMessage = '';
-      });
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -124,27 +117,8 @@ class _LoginPageState extends State<LoginPage> {
       );
     } on FirebaseAuthException catch (e) {
       print("Failed to sign in: $e");
-      setState(() {
-        _errorMessage = _getErrorMessage(e);
-      });
     } catch (e) {
       print("Failed to sign in: $e");
-      setState(() {
-        _errorMessage = 'An error occurred, please try again later.';
-      });
-    }
-  }
-
-  String _getErrorMessage(FirebaseAuthException e) {
-    switch (e.code) {
-      case 'user-not-found':
-        return '사용자가 존재하지 않습니다.';
-      case 'wrong-password':
-        return '비밀번호를 확인하세요';
-      case 'invalid-email':
-        return '이메일을 확인하세요.';
-      default:
-        return 'An error occurred, please try again later.';
     }
   }
 }

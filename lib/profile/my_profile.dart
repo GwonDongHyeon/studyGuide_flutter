@@ -105,7 +105,7 @@ class _MyProfilePage extends State<MyProfilePage> {
             ),
             const SizedBox(height: 24),
             const Text(
-              '좋아요 영상',
+              '나중에 볼 동영상',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,

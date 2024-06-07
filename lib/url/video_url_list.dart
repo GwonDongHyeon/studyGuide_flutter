@@ -68,7 +68,7 @@ const Map<String, List<String>> subjectVideoUrls = {
   '동기부여': [
     'https://www.youtube.com/watch?v=dE2gzSmUVmU',
     'https://www.youtube.com/watch?v=t3CryOu1pMU',
-    'https://www.youtube.com/watch?v=0Kij2BdDcio(',
+    'https://www.youtube.com/watch?v=0Kij2BdDcio',
     'https://www.youtube.com/watch?v=UL1o0V9XZgQ',
   ]
 };

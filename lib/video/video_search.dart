@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:studyguide_flutter/profile/my_profile.dart';
 import 'package:studyguide_flutter/url/video_url_list.dart';
 import 'package:studyguide_flutter/url/video_parse.dart';
 import 'package:studyguide_flutter/url/video_url.dart';
@@ -13,15 +14,25 @@ class VideoSearch extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const VideoSearchPage(searchQuery: ''),
+      home: const VideoSearchPage(
+        searchQuery: '',
+        email: '',
+        id: '',
+      ),
     );
   }
 }
 
 class VideoSearchPage extends StatefulWidget {
-  const VideoSearchPage({Key? key, required this.searchQuery})
+  const VideoSearchPage(
+      {Key? key,
+      required this.searchQuery,
+      required this.email,
+      required this.id})
       : super(key: key);
   final String searchQuery;
+  final String email;
+  final String id;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -56,10 +67,12 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
 
     List<String> newVideos =
         await _filterVideos(widget.searchQuery, filteredVideos.length);
-    setState(() {
-      filteredVideos.addAll(newVideos);
-      _isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        filteredVideos.addAll(newVideos);
+        _isLoading = false;
+      });
+    }
   }
 
   void _scrollListener() {
@@ -96,12 +109,57 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => VideoSearchPage(searchQuery: query),
+                    builder: (context) => VideoSearchPage(
+                      searchQuery: query,
+                      email: widget.email,
+                      id: widget.id,
+                    ),
                   ),
                 );
               },
             ),
           ),
+        ),
+        Row(
+          children: [
+            const SizedBox(width: 5),
+            IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.arrow_back),
+            ),
+            const Spacer(),
+            Text(widget.id),
+            const SizedBox(width: 5),
+            Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.grey[300],
+                    child: IconButton(
+                      onPressed: () {
+                        var email = widget.email;
+                        var id = widget.id;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyProfilePage(
+                              email: email,
+                              id: id,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
         Expanded(
           child: Stack(

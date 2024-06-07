@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously, avoid_print
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Login extends StatelessWidget {
   const Login({Key? key}) : super(key: key);
@@ -34,8 +34,6 @@ class _SignupPageState extends State<SignupPage> {
   final _confirmPasswordController = TextEditingController();
   final _auth = FirebaseAuth.instance;
 
-  // ignore: unused_field
-  String _errorMessage = '';
   String _confirmPasswordError = '';
 
   @override
@@ -137,9 +135,6 @@ class _SignupPageState extends State<SignupPage> {
       });
 
       print("User signed up: ${userCredential.user}");
-      setState(() {
-        _errorMessage = '';
-      });
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -160,25 +155,8 @@ class _SignupPageState extends State<SignupPage> {
       );
     } on FirebaseAuthException catch (e) {
       print("Failed to sign up: $e");
-      setState(() {
-        _errorMessage = _getErrorMessage(e);
-      });
     } catch (e) {
       print("Failed to sign up: $e");
-      setState(() {
-        _errorMessage = 'An error occurred, please try again later.';
-      });
-    }
-  }
-
-  String _getErrorMessage(FirebaseAuthException e) {
-    switch (e.code) {
-      case 'weak-password':
-        return 'The password provided is too weak.';
-      case 'email-already-in-use':
-        return 'The account already exists for that email.';
-      default:
-        return 'An error occurred, please try again later.';
     }
   }
 }

@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "884500961562",
-    "project_id": "studyguide-flutter",
-    "storage_bucket": "studyguide-flutter.appspot.com"
+    "project_number": "54914006362",
+    "project_id": "studyguide-flutter-90e3d",
+    "storage_bucket": "studyguide-flutter-90e3d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:884500961562:android:b9e1b079afa133e1ba74a3",
+        "mobilesdk_app_id": "1:54914006362:android:175fdc53de309828828763",
         "android_client_info": {
           "package_name": "com.example.studyguide_flutter"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD475VCIuD3Y8erzAFuW3h5TR7GUUq7QGs"
+          "current_key": "AIzaSyAJluQjgf1AACZ0qcAtdYiCWBNalS2I5P0"
         }
       ],
       "services": {

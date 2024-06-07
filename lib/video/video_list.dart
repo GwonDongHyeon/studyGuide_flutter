@@ -100,7 +100,11 @@ class _VideoListPageState extends State<VideoListPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => VideoSearchSubjectPage(
-                          subject: widget.subject, searchQuery: query),
+                        subject: widget.subject,
+                        searchQuery: query,
+                        email: widget.email,
+                        id: widget.id,
+                      ),
                     ),
                   );
                 },
@@ -108,8 +112,15 @@ class _VideoListPageState extends State<VideoListPage> {
             ),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              const SizedBox(width: 5),
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.arrow_back),
+              ),
+              const Spacer(),
+              Text(widget.id),
+              const SizedBox(width: 5),
               Padding(
                 padding: const EdgeInsets.only(right: 20),
                 child: Column(
