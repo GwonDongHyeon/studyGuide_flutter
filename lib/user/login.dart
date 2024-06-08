@@ -50,25 +50,38 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Center(
+          child: Text(
+            'Study Guide',
+            style: TextStyle(fontSize: 20),
+          ),
+        ),
+        titleTextStyle: const TextStyle(color: Colors.black),
+        backgroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(60.0),
+              child: Image.asset('assets/images/studyGuide_logo.png'),
             ),
-            TextField(
-              controller: _idController,
-              decoration: const InputDecoration(labelText: 'Id'),
+            SizedBox(
+              width: 250,
+              child: TextField(
+                controller: _idController,
+                decoration: const InputDecoration(labelText: 'Id'),
+              ),
             ),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
+            SizedBox(
+              width: 250,
+              child: TextField(
+                controller: _passwordController,
+                decoration: const InputDecoration(labelText: 'Password'),
+                obscureText: true,
+              ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -82,7 +95,10 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 );
               },
-              child: const Text('Login'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 80, 180, 220),
+              ),
+              child: const Text('로그인'),
             ),
             TextButton(
               onPressed: () {
@@ -91,7 +107,10 @@ class _LoginPageState extends State<LoginPage> {
                   MaterialPageRoute(builder: (context) => const SignupPage()),
                 );
               },
-              child: const Text('Don\'t have an account? Sign up'),
+              child: const Text(
+                '회원가입',
+                style: TextStyle(color: Color.fromARGB(255, 80, 180, 220)),
+              ),
             ),
           ],
         ),

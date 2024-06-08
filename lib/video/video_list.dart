@@ -44,6 +44,7 @@ class _VideoListPageState extends State<VideoListPage> {
   List<String> videoUrls = [];
   final int _currentMax = 8;
   late ScrollController _scrollController;
+  bool _hasMoreVideos = true;
 
   @override
   void initState() {
@@ -60,6 +61,9 @@ class _VideoListPageState extends State<VideoListPage> {
   }
 
   void _loadMoreVideos() {
+    if (!_hasMoreVideos) return;
+    if (videoUrls.length + _currentMax >=
+        subjectVideoUrls[widget.subject]!.length) _hasMoreVideos = false;
     final allVideos = subjectVideoUrls[widget.subject] ?? [];
     setState(() {
       videoUrls.addAll(allVideos.skip(videoUrls.length).take(_currentMax));

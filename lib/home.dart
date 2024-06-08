@@ -15,9 +15,16 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePage extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: CircularProgressIndicator(),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(50.0),
+          child: Image.asset(
+            'assets/images/studyGuide_logo.png',
+            width: 100,
+            height: 100,
+          ),
+        ),
       ),
     );
   }

@@ -41,6 +41,7 @@ class _SignupPageState extends State<SignupPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign Up'),
+        backgroundColor: const Color.fromARGB(255, 80, 180, 220),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -80,11 +81,15 @@ class _SignupPageState extends State<SignupPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _signUp,
-              child: const Text('Sign Up'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 80, 180, 220),
+              ),
+              child: const Text('회원가입'),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Already have an account? Log in'),
+              child: const Text('로그인',
+                  style: TextStyle(color: Color.fromARGB(255, 80, 180, 220))),
             ),
           ],
         ),

@@ -44,9 +44,11 @@ class VideoSearchSubjectPage extends StatefulWidget {
 
 class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
   List<String> filteredVideos = [];
-  final int _currentMax = 8;
   late ScrollController _scrollController;
+  final int _currentMax = 8;
+  int skipIndex = 0;
   bool _isLoading = false;
+  bool _hasMoreVideos = true;
 
   @override
   void initState() {
@@ -63,15 +65,20 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
   }
 
   void _loadMoreVideos() async {
-    if (_isLoading) return;
+    if (_isLoading || !_hasMoreVideos) return;
     setState(() {
       _isLoading = true;
     });
 
-    List<String> newVideos = await _filterVideos(widget.searchQuery);
+    print(skipIndex);
+    List<String> newVideos = await _filterVideos(widget.searchQuery, skipIndex);
     if (mounted) {
       setState(() {
-        filteredVideos.addAll(newVideos);
+        if (newVideos.isEmpty) {
+          _hasMoreVideos = false;
+        } else {
+          filteredVideos.addAll(newVideos);
+        }
         _isLoading = false;
       });
     }
@@ -187,16 +194,22 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
     );
   }
 
-  Future<List<String>> _filterVideos(String query) async {
+  Future<List<String>> _filterVideos(String query, int startIndex) async {
     List<String> filteredUrls = [];
-
+    
     final urls = subjectVideoUrls[widget.subject] ?? [];
 
-    for (var url in urls) {
+    for (var url in urls.skip(startIndex)) {
       try {
         final videoDetails = await fetchVideoDetails(url);
-        if (videoDetails.title.contains(query)) {
+        startIndex++;
+        skipIndex = startIndex;
+        if (videoDetails.title.contains(query) ||
+            videoDetails.channelTitle.contains(query)) {
           filteredUrls.add(url);
+          if (filteredUrls.length % _currentMax == 0) {
+            return filteredUrls;
+          }
         }
       } catch (e) {
         //next url

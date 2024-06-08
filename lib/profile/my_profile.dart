@@ -53,6 +53,7 @@ class _MyProfilePage extends State<MyProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('마이 프로필'),
+        backgroundColor: const Color.fromARGB(255, 80, 180, 220),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -81,7 +82,7 @@ class _MyProfilePage extends State<MyProfilePage> {
                       padding: EdgeInsets.all(4.0),
                       child: Icon(
                         Icons.add,
-                        color: Colors.blue,
+                        color: Color.fromARGB(255, 80, 180, 220),
                       ),
                     ),
                 ],
@@ -164,7 +165,7 @@ class _MyProfilePage extends State<MyProfilePage> {
                 ElevatedButton(
                   onPressed: logout,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: const Color.fromARGB(255, 80, 180, 220),
                   ),
                   child: const Text('로그아웃'),
                 ),
@@ -172,8 +173,7 @@ class _MyProfilePage extends State<MyProfilePage> {
                 ElevatedButton(
                   onPressed: deleteAccount,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                  ),
+                      backgroundColor: const Color.fromARGB(255, 80, 180, 220)),
                   child: const Text('회원 탈퇴'),
                 ),
               ],

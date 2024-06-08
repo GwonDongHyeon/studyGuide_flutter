@@ -42,8 +42,10 @@ class VideoSearchPage extends StatefulWidget {
 class _VideoSearchPageState extends State<VideoSearchPage> {
   List<String> filteredVideos = [];
   final int _currentMax = 8;
+  int skipIndex = 0;
   late ScrollController _scrollController;
   bool _isLoading = false;
+  bool _hasMoreVideos = true;
 
   @override
   void initState() {
@@ -60,16 +62,19 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
   }
 
   void _loadMoreVideos() async {
-    if (_isLoading) return;
+    if (_isLoading || !_hasMoreVideos) return;
     setState(() {
       _isLoading = true;
     });
 
-    List<String> newVideos =
-        await _filterVideos(widget.searchQuery, filteredVideos.length);
+    List<String> newVideos = await _filterVideos(widget.searchQuery, skipIndex);
     if (mounted) {
       setState(() {
-        filteredVideos.addAll(newVideos);
+        if (newVideos.isEmpty) {
+          _hasMoreVideos = false;
+        } else {
+          filteredVideos.addAll(newVideos);
+        }
         _isLoading = false;
       });
     }
@@ -185,20 +190,29 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
   }
 
   Future<List<String>> _filterVideos(String query, int startIndex) async {
+    List<String> urls = [];
     List<String> filteredUrls = [];
 
-    for (var urls in subjectVideoUrls.values) {
-      for (var url in urls) {
-        try {
-          final videoDetails = await fetchVideoDetails(url);
-          if (videoDetails.title.contains(query)) {
-            filteredUrls.add(url);
+    for (var url in subjectVideoUrls.values) {
+      urls.addAll(url);
+    }
+
+    for (var url in urls.skip(startIndex)) {
+      try {
+        final videoDetails = await fetchVideoDetails(url);
+        startIndex++;
+        skipIndex = startIndex;
+        if (videoDetails.title.contains(query) ||
+            videoDetails.channelTitle.contains(query)) {
+          filteredUrls.add(url);
+          if (filteredUrls.length % _currentMax == 0) {
+            return filteredUrls;
           }
-        } catch (e) {
-          //next url
         }
+      } catch (e) {
+        //next url
       }
     }
-    return filteredUrls.skip(startIndex).take(_currentMax).toList();
+    return filteredUrls;
   }
 }

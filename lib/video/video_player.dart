@@ -62,7 +62,6 @@ class _VideoPage extends State<VideoPage> {
       if (videoId == null) {
         return;
       }
-
       _controller = YoutubePlayerController(
         initialVideoId: videoId,
         flags: const YoutubePlayerFlags(
@@ -106,6 +105,7 @@ class _VideoPage extends State<VideoPage> {
       builder: (context, player) => Scaffold(
         appBar: AppBar(
           title: const Text('Video Player'),
+          backgroundColor: const Color.fromARGB(255, 80, 180, 220),
         ),
         body: ListView(
           children: [

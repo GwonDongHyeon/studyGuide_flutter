@@ -22,6 +22,7 @@ class CreatorProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('강사 프로필'),
+        backgroundColor: const Color.fromARGB(255, 80, 180, 220),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
