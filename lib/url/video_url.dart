@@ -20,7 +20,7 @@ class YouTubeVideo {
   });
 }
 
-Widget buildLinkItem(String videoUrl) {
+Widget buildLinkItem(String videoUrl, String id) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Link(
@@ -41,6 +41,7 @@ Widget buildLinkItem(String videoUrl) {
                     context,
                     MaterialPageRoute(
                       builder: (context) => VideoPage(
+                        email: id,
                         videoUrl: videoUrl,
                         title: video.title,
                         thumbnailUrl: video.thumbnailUrl,
@@ -157,28 +158,3 @@ Widget buildLinkItem(String videoUrl) {
     ),
   );
 }
-/*
-void saveVideoForLaterWatching(YouTubeVideo video, BuildContext context) {
-  FirebaseFirestore.instance.collection('watch_later').add({
-    'title': video.title,
-    'thumbnailUrl': video.thumbnailUrl,
-    'viewCount': video.viewCount,
-    'channelTitle': video.channelTitle,
-    'channelThumbnailUrl': video.channelThumbnailUrl,
-  }).then((_) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('영상을 나중에 볼 목록에 추가했습니다!'),
-      ),
-    );
-  }).catchError((error) {
-    // ignore: avoid_print
-    print('Firestore 저장 오류: $error');
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('영상을 나중에 볼 목록에 추가하는 중 오류가 발생했습니다.'),
-      ),
-    );
-  });
-}
-*/

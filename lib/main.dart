@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:studyguide_flutter/home.dart';
-import 'package:studyguide_flutter/user/firebase_settings.dart';
+import 'package:studyguide_flutter/api/firebase_settings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

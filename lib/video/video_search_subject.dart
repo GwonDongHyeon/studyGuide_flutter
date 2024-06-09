@@ -69,8 +69,7 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
     setState(() {
       _isLoading = true;
     });
-
-    print(skipIndex);
+    
     List<String> newVideos = await _filterVideos(widget.searchQuery, skipIndex);
     if (mounted) {
       setState(() {
@@ -180,7 +179,8 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
                       controller: _scrollController,
                       crossAxisCount: 2,
                       children: filteredVideos
-                          .map((url) => buildLinkItem(url))
+                          .map((url) =>
+                              buildLinkItem(url, widget.id))
                           .toList(),
                     ),
               if (_isLoading)
@@ -196,7 +196,7 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
 
   Future<List<String>> _filterVideos(String query, int startIndex) async {
     List<String> filteredUrls = [];
-    
+
     final urls = subjectVideoUrls[widget.subject] ?? [];
 
     for (var url in urls.skip(startIndex)) {

@@ -175,7 +175,7 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
                       controller: _scrollController,
                       crossAxisCount: 2,
                       children: filteredVideos
-                          .map((url) => buildLinkItem(url))
+                          .map((url) => buildLinkItem(url, widget.id))
                           .toList(),
                     ),
               if (_isLoading)

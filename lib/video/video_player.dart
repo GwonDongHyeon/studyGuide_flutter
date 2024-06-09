@@ -1,10 +1,11 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, avoid_print
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:studyguide_flutter/api/api.dart';
 import 'package:studyguide_flutter/profile/creator_profile.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:http/http.dart' as http;
 
 class VideoPlayer extends StatelessWidget {
   const VideoPlayer({super.key});
@@ -14,6 +15,7 @@ class VideoPlayer extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: VideoPage(
+        email: '',
         videoUrl: '',
         title: '',
         thumbnailUrl: '',
@@ -26,6 +28,7 @@ class VideoPlayer extends StatelessWidget {
 }
 
 class VideoPage extends StatefulWidget {
+  final String email;
   final String videoUrl;
   final String title;
   final String thumbnailUrl;
@@ -35,6 +38,7 @@ class VideoPage extends StatefulWidget {
 
   const VideoPage({
     super.key,
+    required this.email,
     required this.videoUrl,
     required this.title,
     required this.thumbnailUrl,
@@ -49,6 +53,7 @@ class VideoPage extends StatefulWidget {
 
 class _VideoPage extends State<VideoPage> {
   late YoutubePlayerController _controller;
+  bool _isSaved = false;
 
   @override
   void initState() {
@@ -121,12 +126,13 @@ class _VideoPage extends State<VideoPage> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    '조회수 ${widget.viewCount}',
+                    ' 조회수 ${widget.viewCount}',
                     style: const TextStyle(fontSize: 12),
                   ),
                   const SizedBox(height: 5),
                   Row(
                     children: [
+                      const SizedBox(width: 3),
                       InkWell(
                         onTap: () {
                           Navigator.push(
@@ -137,20 +143,33 @@ class _VideoPage extends State<VideoPage> {
                             ),
                           );
                         },
-                        child: CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(widget.channelThumbnailUrl),
-                          radius: 20,
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(widget.channelThumbnailUrl),
+                              radius: 20,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(widget.channelTitle),
+                          ],
                         ),
                       ),
-                      const SizedBox(width: 5),
-                      Text(widget.channelTitle),
                       const Spacer(),
                       IconButton(
                         onPressed: () {
-                          _saveURLToFirestore(widget.videoUrl);
+                          if (_isSaved) {
+                            deleteURLForUser(widget.email, widget.videoUrl);
+                          } else {
+                            saveURLForUser(widget.email, widget.videoUrl);
+                          }
+                          setState(() {
+                            _isSaved = !_isSaved;
+                          });
                         },
-                        icon: const Icon(Icons.favorite),
+                        icon: _isSaved
+                            ? const Icon(Icons.favorite)
+                            : const Icon(Icons.favorite_border),
                       ),
                       IconButton(
                         onPressed: () {
@@ -182,14 +201,43 @@ class _VideoPage extends State<VideoPage> {
     );
   }
 
-  Future<void> _saveURLToFirestore(String url) async {
+  Future<void> saveURLForUser(String email, String url) async {
     try {
-      await FirebaseFirestore.instance.collection('urls').add({
-        'url': url,
-      });
-      print('URL이 Firestore에 저장되었습니다.');
-    } catch (error) {
-      print('Firestore에 URL 저장 중 오류가 발생했습니다: $error');
+      var response= await http.post(
+        Uri.parse(API.input),
+        body: {
+          'email': email,
+          'video_url': url,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('나중에 볼 동영상에 저장되었습니다.')),
+        );
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> deleteURLForUser(String email, String url) async {
+    try {
+      var response = await http.post(
+        Uri.parse(API.delete),
+        body: {
+          'email': email,
+          'video_url': url,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('나중에 볼 동영상에서 삭제되었습니다.')),
+        );
+      }
+    } catch (e) {
+      print(e);
     }
   }
 }

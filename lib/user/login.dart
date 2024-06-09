@@ -65,14 +65,14 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ClipRRect(
-              borderRadius: BorderRadius.circular(60.0),
+              borderRadius: BorderRadius.circular(80.0),
               child: Image.asset('assets/images/studyGuide_logo.png'),
             ),
             SizedBox(
               width: 250,
               child: TextField(
                 controller: _idController,
-                decoration: const InputDecoration(labelText: 'Id'),
+                decoration: const InputDecoration(labelText: 'email'),
               ),
             ),
             SizedBox(

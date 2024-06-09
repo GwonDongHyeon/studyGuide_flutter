@@ -1,9 +1,12 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, avoid_print
 
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:studyguide_flutter/api/api.dart';
 import 'package:studyguide_flutter/user/login.dart';
+import 'package:http/http.dart' as http;
 
 class MyProfile extends StatelessWidget {
   const MyProfile({super.key});
@@ -34,22 +37,34 @@ class MyProfilePage extends StatefulWidget {
 class _MyProfilePage extends State<MyProfilePage> {
   File? image;
   final picker = ImagePicker();
+  List<String> savedVideos = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    try {
+      final response = await http.post(
+        Uri.parse(API.output),
+        body: {
+          'email': widget.email,
+        },
+      );
+      if (response.statusCode == 200) {
+        setState(() {
+          savedVideos = List<String>.from(json.decode(response.body));
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<String> watchRecord = [
-      'Video 1',
-      'Video 2',
-      'Video 3',
-      'Video 4',
-      'Video 5',
-      'Video 6',
-      'Video 7',
-      'Video 8',
-      'Video 9',
-      'Video 10',
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('마이 프로필'),
@@ -117,14 +132,14 @@ class _MyProfilePage extends State<MyProfilePage> {
               height: 120,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: watchRecord.length,
+                itemCount: savedVideos.length,
                 itemBuilder: (context, index) {
                   return Container(
                     margin: const EdgeInsets.only(right: 8),
                     width: 160,
                     child: Card(
                       child: Center(
-                        child: Text(watchRecord[index]),
+                        child: Text(savedVideos[index]),
                       ),
                     ),
                   );
@@ -144,14 +159,14 @@ class _MyProfilePage extends State<MyProfilePage> {
               height: 120,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: watchRecord.length,
+                itemCount: savedVideos.length,
                 itemBuilder: (context, index) {
                   return Container(
                     margin: const EdgeInsets.only(right: 8),
                     width: 160,
                     child: Card(
                       child: Center(
-                        child: Text(watchRecord[index]),
+                        child: Text(savedVideos[index]),
                       ),
                     ),
                   );
@@ -201,7 +216,9 @@ class _MyProfilePage extends State<MyProfilePage> {
       const SnackBar(content: Text('로그아웃 되었습니다.')),
     );
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const LoginPage()));
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+    );
   }
 
   void deleteAccount() async {
@@ -228,7 +245,10 @@ class _MyProfilePage extends State<MyProfilePage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('회원 탈퇴가 완료되었습니다.')),
       );
-      Navigator.pop(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
     }
   }
 }

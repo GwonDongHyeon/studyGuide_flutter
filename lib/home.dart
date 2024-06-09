@@ -18,9 +18,9 @@ class _MyHomePage extends State<MyHomePage> {
     return Scaffold(
       body: Center(
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(50.0),
+          borderRadius: BorderRadius.circular(80.0),
           child: Image.asset(
-            'assets/images/studyGuide_logo.png',
+            'assets/images/studyGuide_loading.png',
             width: 100,
             height: 100,
           ),

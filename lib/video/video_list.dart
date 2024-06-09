@@ -133,14 +133,12 @@ class _VideoListPageState extends State<VideoListPage> {
                       backgroundColor: Colors.grey[300],
                       child: IconButton(
                         onPressed: () {
-                          var email = widget.email;
-                          var id = widget.id;
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => MyProfilePage(
-                                email: email,
-                                id: id,
+                                email: widget.email,
+                                id: widget.id,
                               ),
                             ),
                           );
@@ -160,7 +158,9 @@ class _VideoListPageState extends State<VideoListPage> {
             child: GridView.count(
               controller: _scrollController,
               crossAxisCount: 2,
-              children: videoUrls.map((url) => buildLinkItem(url)).toList(),
+              children: videoUrls
+                  .map((url) => buildLinkItem(url, widget.id))
+                  .toList(),
             ),
           ),
         ],
