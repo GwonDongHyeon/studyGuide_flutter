@@ -18,24 +18,21 @@ class VideoSearchSubject extends StatelessWidget {
         searchQuery: '',
         subject: '',
         email: '',
-        id: '',
       ),
     );
   }
 }
 
 class VideoSearchSubjectPage extends StatefulWidget {
-  const VideoSearchSubjectPage(
-      {Key? key,
-      required this.searchQuery,
-      required this.subject,
-      required this.email,
-      required this.id})
-      : super(key: key);
+  const VideoSearchSubjectPage({
+    Key? key,
+    required this.searchQuery,
+    required this.subject,
+    required this.email,
+  }) : super(key: key);
   final String searchQuery;
   final String subject;
   final String email;
-  final String id;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -69,7 +66,7 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
     setState(() {
       _isLoading = true;
     });
-    
+
     List<String> newVideos = await _filterVideos(widget.searchQuery, skipIndex);
     if (mounted) {
       setState(() {
@@ -121,7 +118,6 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
                       searchQuery: query,
                       subject: widget.subject,
                       email: widget.email,
-                      id: widget.id,
                     ),
                   ),
                 );
@@ -137,7 +133,7 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
               icon: const Icon(Icons.arrow_back),
             ),
             const Spacer(),
-            Text(widget.id),
+            Text(widget.email),
             const SizedBox(width: 5),
             Padding(
               padding: const EdgeInsets.only(right: 20),
@@ -147,14 +143,11 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
                     backgroundColor: Colors.grey[300],
                     child: IconButton(
                       onPressed: () {
-                        var email = widget.email;
-                        var id = widget.id;
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => MyProfilePage(
-                              email: email,
-                              id: id,
+                              email: widget.email,
                             ),
                           ),
                         );
@@ -179,8 +172,7 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
                       controller: _scrollController,
                       crossAxisCount: 2,
                       children: filteredVideos
-                          .map((url) =>
-                              buildLinkItem(url, widget.id))
+                          .map((url) => buildLinkItem(url, widget.email))
                           .toList(),
                     ),
               if (_isLoading)

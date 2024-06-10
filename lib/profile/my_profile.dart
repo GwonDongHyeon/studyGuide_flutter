@@ -16,18 +16,15 @@ class MyProfile extends StatelessWidget {
     return const MaterialApp(
       home: MyProfilePage(
         email: '',
-        id: '',
       ),
     );
   }
 }
 
 class MyProfilePage extends StatefulWidget {
-  const MyProfilePage({Key? key, required this.email, required this.id})
-      : super(key: key);
+  const MyProfilePage({Key? key, required this.email}) : super(key: key);
 
   final String email;
-  final String id;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -105,7 +102,7 @@ class _MyProfilePage extends State<MyProfilePage> {
             ),
             const SizedBox(height: 16),
             Text(
-              widget.id,
+              widget.email,
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,

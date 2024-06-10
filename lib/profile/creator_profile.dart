@@ -6,16 +6,16 @@ class CreatorProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: CreatorProfilePage(nameText: ''),
+      home: CreatorProfilePage(channelTitle: ''),
     );
   }
 }
 
 class CreatorProfilePage extends StatelessWidget {
-  const CreatorProfilePage({Key? key, required this.nameText})
+  const CreatorProfilePage({Key? key, required this.channelTitle})
       : super(key: key);
 
-  final String nameText;
+  final String channelTitle;
 
   @override
   Widget build(BuildContext context) {

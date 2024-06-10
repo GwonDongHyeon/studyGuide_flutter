@@ -20,7 +20,7 @@ class YouTubeVideo {
   });
 }
 
-Widget buildLinkItem(String videoUrl, String id) {
+Widget buildLinkItem(String videoUrl, String email) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Link(
@@ -41,7 +41,7 @@ Widget buildLinkItem(String videoUrl, String id) {
                     context,
                     MaterialPageRoute(
                       builder: (context) => VideoPage(
-                        email: id,
+                        email: email,
                         videoUrl: videoUrl,
                         title: video.title,
                         thumbnailUrl: video.thumbnailUrl,
@@ -102,48 +102,33 @@ Widget buildLinkItem(String videoUrl, String id) {
                             'View: ${video.viewCount}',
                             style: const TextStyle(fontSize: 8),
                           ),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const CreatorProfilePage(
-                                              nameText: ''),
-                                    ),
-                                  );
-                                },
-                                child: CircleAvatar(
+                          const SizedBox(height: 14),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CreatorProfilePage(
+                                      channelTitle: video.channelTitle),
+                                ),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                CircleAvatar(
                                   backgroundImage:
                                       NetworkImage(video.channelThumbnailUrl),
                                   radius: 8,
                                 ),
-                              ),
-                              const SizedBox(width: 4),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const CreatorProfilePage(
-                                                nameText: ''),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    video.channelTitle,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontSize: 10),
-                                  ),
+                                const SizedBox(width: 5),
+                                Text(
+                                  video.channelTitle,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 10),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ],
                       ),

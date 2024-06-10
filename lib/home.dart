@@ -50,7 +50,6 @@ class _MyHomePage extends State<MyHomePage> {
         Get.off(
           () => const VideoSubjectPage(
             email: '',
-            id: '',
           ),
         );
       }

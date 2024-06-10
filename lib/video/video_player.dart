@@ -138,8 +138,8 @@ class _VideoPage extends State<VideoPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const CreatorProfilePage(nameText: ''),
+                              builder: (context) => CreatorProfilePage(
+                                  channelTitle: widget.channelTitle),
                             ),
                           );
                         },
@@ -203,7 +203,7 @@ class _VideoPage extends State<VideoPage> {
 
   Future<void> saveURLForUser(String email, String url) async {
     try {
-      var response= await http.post(
+      var response = await http.post(
         Uri.parse(API.input),
         body: {
           'email': email,

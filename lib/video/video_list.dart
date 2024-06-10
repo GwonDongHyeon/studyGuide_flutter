@@ -17,7 +17,6 @@ class VideoList extends StatelessWidget {
       home: const VideoListPage(
         subject: '',
         email: '',
-        id: '',
       ),
     );
   }
@@ -28,12 +27,10 @@ class VideoListPage extends StatefulWidget {
     super.key,
     required this.subject,
     required this.email,
-    required this.id,
   });
 
   final String subject;
   final String email;
-  final String id;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -107,7 +104,6 @@ class _VideoListPageState extends State<VideoListPage> {
                         subject: widget.subject,
                         searchQuery: query,
                         email: widget.email,
-                        id: widget.id,
                       ),
                     ),
                   );
@@ -123,7 +119,7 @@ class _VideoListPageState extends State<VideoListPage> {
                 icon: const Icon(Icons.arrow_back),
               ),
               const Spacer(),
-              Text(widget.id),
+              Text(widget.email),
               const SizedBox(width: 5),
               Padding(
                 padding: const EdgeInsets.only(right: 20),
@@ -138,7 +134,6 @@ class _VideoListPageState extends State<VideoListPage> {
                             MaterialPageRoute(
                               builder: (context) => MyProfilePage(
                                 email: widget.email,
-                                id: widget.id,
                               ),
                             ),
                           );
@@ -159,7 +154,7 @@ class _VideoListPageState extends State<VideoListPage> {
               controller: _scrollController,
               crossAxisCount: 2,
               children: videoUrls
-                  .map((url) => buildLinkItem(url, widget.id))
+                  .map((url) => buildLinkItem(url, widget.email))
                   .toList(),
             ),
           ),

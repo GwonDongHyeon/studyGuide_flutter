@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               width: 250,
               child: TextField(
-                controller: _idController,
+                controller: _emailController,
                 decoration: const InputDecoration(labelText: 'email'),
               ),
             ),
@@ -90,8 +90,8 @@ class _LoginPageState extends State<LoginPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => VideoSubjectPage(
-                        email: _emailController.text, id: _idController.text),
+                    builder: (context) =>
+                        VideoSubjectPage(email: _emailController.text),
                   ),
                 );
               },
@@ -130,7 +130,6 @@ class _LoginPageState extends State<LoginPage> {
         MaterialPageRoute(
           builder: (context) => VideoSubjectPage(
             email: _emailController.text,
-            id: _idController.text,
           ),
         ),
       );

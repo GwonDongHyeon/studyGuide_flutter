@@ -15,18 +15,16 @@ class VideoSubject extends StatelessWidget {
       ),
       home: const VideoSubjectPage(
         email: '',
-        id: '',
       ),
     );
   }
 }
 
 class VideoSubjectPage extends StatelessWidget {
-  const VideoSubjectPage({Key? key, required this.email, required this.id})
+  const VideoSubjectPage({Key? key, required this.email})
       : super(key: key);
 
   final String email;
-  final String id;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +55,6 @@ class VideoSubjectPage extends StatelessWidget {
                       builder: (context) => VideoSearchPage(
                         searchQuery: query,
                         email: email,
-                        id: id,
                       ),
                     ),
                   );
@@ -68,7 +65,7 @@ class VideoSubjectPage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text(id),
+              Text(email),
               const SizedBox(width: 5),
               Padding(
                 padding: const EdgeInsets.only(right: 20),
@@ -81,7 +78,6 @@ class VideoSubjectPage extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => MyProfilePage(
                             email: email,
-                            id: id,
                           ),
                         ),
                       );
@@ -127,7 +123,6 @@ class VideoSubjectPage extends StatelessWidget {
               builder: (context) => VideoListPage(
                 subject: subject,
                 email: email,
-                id: id,
               ),
             ),
           );

@@ -17,22 +17,19 @@ class VideoSearch extends StatelessWidget {
       home: const VideoSearchPage(
         searchQuery: '',
         email: '',
-        id: '',
       ),
     );
   }
 }
 
 class VideoSearchPage extends StatefulWidget {
-  const VideoSearchPage(
-      {Key? key,
-      required this.searchQuery,
-      required this.email,
-      required this.id})
-      : super(key: key);
+  const VideoSearchPage({
+    Key? key,
+    required this.searchQuery,
+    required this.email,
+  }) : super(key: key);
   final String searchQuery;
   final String email;
-  final String id;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -117,7 +114,6 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
                     builder: (context) => VideoSearchPage(
                       searchQuery: query,
                       email: widget.email,
-                      id: widget.id,
                     ),
                   ),
                 );
@@ -133,7 +129,7 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
               icon: const Icon(Icons.arrow_back),
             ),
             const Spacer(),
-            Text(widget.id),
+            Text(widget.email),
             const SizedBox(width: 5),
             Padding(
               padding: const EdgeInsets.only(right: 20),
@@ -143,14 +139,11 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
                     backgroundColor: Colors.grey[300],
                     child: IconButton(
                       onPressed: () {
-                        var email = widget.email;
-                        var id = widget.id;
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => MyProfilePage(
-                              email: email,
-                              id: id,
+                              email: widget.email,
                             ),
                           ),
                         );
@@ -175,7 +168,7 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
                       controller: _scrollController,
                       crossAxisCount: 2,
                       children: filteredVideos
-                          .map((url) => buildLinkItem(url, widget.id))
+                          .map((url) => buildLinkItem(url, widget.email))
                           .toList(),
                     ),
               if (_isLoading)
