@@ -52,28 +52,6 @@ Widget buildLinkItem(String videoUrl, String email) {
                     ),
                   );
                 },
-                onLongPress: () {
-                  showDialog(
-                    context: ctx,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('저장'),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              title: const Text('나중에 볼 동영상'),
-                              onTap: () {
-                                //saveVideoForLaterWatching(video, context);
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -97,18 +75,20 @@ Widget buildLinkItem(String videoUrl, String email) {
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 3),
                           Text(
-                            'View: ${video.viewCount}',
+                            '조회수: ${video.viewCount}',
                             style: const TextStyle(fontSize: 8),
                           ),
-                          const SizedBox(height: 14),
+                          const SizedBox(height: 4),
                           InkWell(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => CreatorProfilePage(
+                                      channelThumbnailUrl:
+                                          video.channelThumbnailUrl,
                                       channelTitle: video.channelTitle),
                                 ),
                               );

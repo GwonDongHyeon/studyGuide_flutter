@@ -35,12 +35,15 @@ class _SignupPageState extends State<SignupPage> {
   final _auth = FirebaseAuth.instance;
 
   String _confirmPasswordError = '';
+  String _emailError = '';
+  String _idError = '';
+  String _passwordError = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign Up'),
+        title: const Text('화원가입'),
         backgroundColor: const Color.fromARGB(255, 80, 180, 220),
       ),
       body: Padding(
@@ -50,15 +53,24 @@ class _SignupPageState extends State<SignupPage> {
           children: <Widget>[
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(
+                labelText: 'Email',
+                errorText: _emailError.isNotEmpty ? _emailError : null,
+              ),
             ),
             TextField(
               controller: _idController,
-              decoration: const InputDecoration(labelText: 'Id'),
+              decoration: InputDecoration(
+                labelText: 'Id',
+                errorText: _idError.isNotEmpty ? _idError : null,
+              ),
             ),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(
+                labelText: 'Password',
+                errorText: _passwordError.isNotEmpty ? _passwordError : null,
+              ),
               obscureText: true,
             ),
             TextField(
@@ -99,25 +111,43 @@ class _SignupPageState extends State<SignupPage> {
 
   Future<void> _signUp() async {
     setState(() {
+      _emailError = '';
+      _idError = '';
+      _passwordError = '';
       _confirmPasswordError = '';
     });
 
+    if (_emailController.text.isEmpty) {
+      setState(() {
+        _emailError = 'Email을 입력해 주세요';
+      });
+    }
+    if (_idController.text.isEmpty) {
+      setState(() {
+        _idError = 'Id를 입력해 주세요';
+      });
+    }
+    if (_passwordController.text.isEmpty) {
+      setState(() {
+        _passwordError = 'Password를 입력해 주세요';
+      });
+    }
     if (_passwordController.text != _confirmPasswordController.text) {
       setState(() {
-        _confirmPasswordError = 'Passwords do not match';
+        _confirmPasswordError = 'Password가 일치하지 않습니다';
       });
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Error'),
-            content: const Text('Passwords do not match.'),
+            content: const Text('Password가 일치하지 않습니다'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text('OK'),
+                child: const Text('확인'),
               ),
             ],
           );
@@ -134,9 +164,14 @@ class _SignupPageState extends State<SignupPage> {
 
       String uid = userCredential.user!.uid;
 
+      await userCredential.user!
+          .updateProfile(displayName: _idController.text.trim());
+      await userCredential.user!.reload();
+      User? updatedUser = _auth.currentUser;
+
       await FirebaseFirestore.instance.collection('users').doc(uid).set({
         'email': _emailController.text.trim(),
-        'id': _idController.text.trim(),
+        'displayName': updatedUser?.displayName,
       });
 
       print("User signed up: ${userCredential.user}");
@@ -144,15 +179,15 @@ class _SignupPageState extends State<SignupPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Sign Up Successful'),
-            content: const Text('Your account has been created successfully.'),
+            title: const Text('회원가입 성공'),
+            content: const Text('화원가입에 성공하였습니다'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                   Navigator.pop(context);
                 },
-                child: const Text('OK'),
+                child: const Text('확인'),
               ),
             ],
           );

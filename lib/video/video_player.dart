@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, avoid_print
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:studyguide_flutter/api/api.dart';
@@ -28,14 +29,6 @@ class VideoPlayer extends StatelessWidget {
 }
 
 class VideoPage extends StatefulWidget {
-  final String email;
-  final String videoUrl;
-  final String title;
-  final String thumbnailUrl;
-  final String viewCount;
-  final String channelTitle;
-  final String channelThumbnailUrl;
-
   const VideoPage({
     super.key,
     required this.email,
@@ -47,6 +40,14 @@ class VideoPage extends StatefulWidget {
     required this.channelThumbnailUrl,
   });
 
+  final String email;
+  final String videoUrl;
+  final String title;
+  final String thumbnailUrl;
+  final String viewCount;
+  final String channelTitle;
+  final String channelThumbnailUrl;
+
   @override
   _VideoPage createState() => _VideoPage();
 }
@@ -54,11 +55,19 @@ class VideoPage extends StatefulWidget {
 class _VideoPage extends State<VideoPage> {
   late YoutubePlayerController _controller;
   bool _isSaved = false;
+  List<String> savedVideos = [];
 
   @override
   void initState() {
     super.initState();
     _initializePlayer();
+    _fetchData();
+  }
+
+  void _checkIfSaved() {
+    setState(() {
+      _isSaved = savedVideos.contains(widget.videoUrl);
+    });
   }
 
   Future<void> _initializePlayer() async {
@@ -84,16 +93,27 @@ class _VideoPage extends State<VideoPage> {
     }
   }
 
+  Future<void> _fetchData() async {
+    try {
+      final response = await http.post(
+        Uri.parse(API.output),
+        body: {
+          'email': widget.email,
+        },
+      );
+      if (response.statusCode == 200) {
+        savedVideos = List<String>.from(json.decode(response.body));
+        _checkIfSaved();
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   void deactivate() {
     _controller.pause();
     super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -109,7 +129,6 @@ class _VideoPage extends State<VideoPage> {
       ),
       builder: (context, player) => Scaffold(
         appBar: AppBar(
-          title: const Text('Video Player'),
           backgroundColor: const Color.fromARGB(255, 80, 180, 220),
         ),
         body: ListView(
@@ -139,7 +158,9 @@ class _VideoPage extends State<VideoPage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => CreatorProfilePage(
-                                  channelTitle: widget.channelTitle),
+                                channelThumbnailUrl: widget.channelThumbnailUrl,
+                                channelTitle: widget.channelTitle,
+                              ),
                             ),
                           );
                         },
@@ -197,7 +218,10 @@ class _VideoPage extends State<VideoPage> {
   Future<void> _copyToClipboard(String text) async {
     await Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('URL이 클립보드에 복사되었습니다.')),
+      const SnackBar(
+        content: Text('URL이 클립보드에 복사되었습니다.'),
+        duration: Duration(seconds: 1),
+      ),
     );
   }
 
@@ -213,7 +237,10 @@ class _VideoPage extends State<VideoPage> {
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('나중에 볼 동영상에 저장되었습니다.')),
+          const SnackBar(
+            content: Text('나중에 볼 동영상에 저장되었습니다.'),
+            duration: Duration(seconds: 1),
+          ),
         );
       }
     } catch (e) {
@@ -233,7 +260,10 @@ class _VideoPage extends State<VideoPage> {
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('나중에 볼 동영상에서 삭제되었습니다.')),
+          const SnackBar(
+            content: Text('나중에 볼 동영상에서 삭제되었습니다.'),
+            duration: Duration(seconds: 1),
+          ),
         );
       }
     } catch (e) {

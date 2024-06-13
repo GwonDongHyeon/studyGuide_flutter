@@ -17,6 +17,7 @@ class VideoList extends StatelessWidget {
       home: const VideoListPage(
         subject: '',
         email: '',
+        id: '',
       ),
     );
   }
@@ -27,10 +28,12 @@ class VideoListPage extends StatefulWidget {
     super.key,
     required this.subject,
     required this.email,
+    required this.id,
   });
 
   final String subject;
   final String email;
+  final String id;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -61,7 +64,9 @@ class _VideoListPageState extends State<VideoListPage> {
     if (!_hasMoreVideos) return;
     if (videoUrls.length + _currentMax >=
         subjectVideoUrls[widget.subject]!.length) _hasMoreVideos = false;
-    final allVideos = subjectVideoUrls[widget.subject] ?? [];
+    final allVideos = (subjectVideoUrls[widget.subject] ?? [])
+        .map((list) => list[0])
+        .toList();
     setState(() {
       videoUrls.addAll(allVideos.skip(videoUrls.length).take(_currentMax));
     });
@@ -104,6 +109,7 @@ class _VideoListPageState extends State<VideoListPage> {
                         subject: widget.subject,
                         searchQuery: query,
                         email: widget.email,
+                        id: widget.id,
                       ),
                     ),
                   );
@@ -119,7 +125,7 @@ class _VideoListPageState extends State<VideoListPage> {
                 icon: const Icon(Icons.arrow_back),
               ),
               const Spacer(),
-              Text(widget.email),
+              Text(widget.id),
               const SizedBox(width: 5),
               Padding(
                 padding: const EdgeInsets.only(right: 20),
@@ -134,6 +140,7 @@ class _VideoListPageState extends State<VideoListPage> {
                             MaterialPageRoute(
                               builder: (context) => MyProfilePage(
                                 email: widget.email,
+                                id: widget.id,
                               ),
                             ),
                           );

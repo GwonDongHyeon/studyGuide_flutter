@@ -4,28 +4,32 @@ import 'package:studyguide_flutter/video/video_search.dart';
 import 'package:studyguide_flutter/profile/my_profile.dart';
 
 class VideoSubject extends StatelessWidget {
-  const VideoSubject({Key? key}) : super(key: key);
+  const VideoSubject({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Subjects',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const VideoSubjectPage(
+    return const MaterialApp(
+      home: VideoSubjectPage(
         email: '',
+        id: '',
       ),
     );
   }
 }
 
-class VideoSubjectPage extends StatelessWidget {
-  const VideoSubjectPage({Key? key, required this.email})
+class VideoSubjectPage extends StatefulWidget {
+  const VideoSubjectPage({Key? key, required this.email, required this.id})
       : super(key: key);
 
   final String email;
+  final String id;
 
+  @override
+  // ignore: library_private_types_in_public_api
+  _VideoSubjectPage createState() => _VideoSubjectPage();
+}
+
+class _VideoSubjectPage extends State<VideoSubjectPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +58,8 @@ class VideoSubjectPage extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => VideoSearchPage(
                         searchQuery: query,
-                        email: email,
+                        email: widget.email,
+                        id: widget.id,
                       ),
                     ),
                   );
@@ -65,7 +70,7 @@ class VideoSubjectPage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text(email),
+              Text(widget.id),
               const SizedBox(width: 5),
               Padding(
                 padding: const EdgeInsets.only(right: 20),
@@ -77,7 +82,8 @@ class VideoSubjectPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => MyProfilePage(
-                            email: email,
+                            email: widget.email,
+                            id: widget.id,
                           ),
                         ),
                       );
@@ -122,7 +128,8 @@ class VideoSubjectPage extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => VideoListPage(
                 subject: subject,
-                email: email,
+                email: widget.email,
+                id: widget.id,
               ),
             ),
           );

@@ -3,9 +3,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:studyguide_flutter/api/api.dart';
+import 'package:studyguide_flutter/profile/my_profile_video.dart';
+import 'package:studyguide_flutter/url/video_url.dart';
 import 'package:studyguide_flutter/user/login.dart';
+import 'package:studyguide_flutter/video/video_player.dart';
+import 'package:url_launcher/link.dart';
 import 'package:http/http.dart' as http;
 
 class MyProfile extends StatelessWidget {
@@ -16,15 +22,21 @@ class MyProfile extends StatelessWidget {
     return const MaterialApp(
       home: MyProfilePage(
         email: '',
+        id: '',
       ),
     );
   }
 }
 
 class MyProfilePage extends StatefulWidget {
-  const MyProfilePage({Key? key, required this.email}) : super(key: key);
+  const MyProfilePage({
+    Key? key,
+    required this.email,
+    required this.id,
+  }) : super(key: key);
 
   final String email;
+  final String id;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -102,7 +114,7 @@ class _MyProfilePage extends State<MyProfilePage> {
             ),
             const SizedBox(height: 16),
             Text(
-              widget.email,
+              widget.id,
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -117,58 +129,116 @@ class _MyProfilePage extends State<MyProfilePage> {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
-              '나중에 볼 동영상',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            SizedBox(
-              height: 120,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: savedVideos.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.only(right: 8),
-                    width: 160,
-                    child: Card(
-                      child: Center(
-                        child: Text(savedVideos[index]),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    const Text(
+                      '나중에 볼 동영상',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              '좋아요 강사',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            SizedBox(
-              height: 120,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: savedVideos.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.only(right: 8),
-                    width: 160,
-                    child: Card(
-                      child: Center(
-                        child: Text(savedVideos[index]),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyProfileVideoListPage(
+                              myVideoUrls: savedVideos,
+                              email: widget.email,
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        '전체 보기 >>',
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 95,
+                  child: savedVideos.isEmpty
+                      ? const Center(child: Text('비어있습니다'))
+                      : ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: savedVideos.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: const EdgeInsets.only(right: 8),
+                              width: 160,
+                              child: Card(
+                                child: Center(
+                                  child: buildLinkMyItem(
+                                      savedVideos[index], widget.email),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                ),
+                const SizedBox(height: 24),
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        const Text(
+                          '좋아요 강사',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Spacer(),
+                        TextButton(
+                          onPressed: () {
+                            //
+                          },
+                          child: const Text(
+                            '전체 보기 >>',
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      height: 120,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: savedVideos.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: const EdgeInsets.only(right: 8),
+                            width: 160,
+                            child: Card(
+                              child: Center(
+                                child: Text(savedVideos[index]),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
-                  );
-                },
-              ),
+                  ],
+                ),
+              ],
             ),
             const Spacer(),
             Column(
@@ -210,7 +280,10 @@ class _MyProfilePage extends State<MyProfilePage> {
   void logout() {
     // 로그아웃 로직 구현
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('로그아웃 되었습니다.')),
+      const SnackBar(
+        content: Text('로그아웃 되었습니다.'),
+        duration: Duration(seconds: 1),
+      ),
     );
     Navigator.push(
       context,
@@ -240,7 +313,10 @@ class _MyProfilePage extends State<MyProfilePage> {
 
     if (confirmed) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('회원 탈퇴가 완료되었습니다.')),
+        const SnackBar(
+          content: Text('회원 탈퇴가 완료되었습니다.'),
+          duration: Duration(seconds: 1),
+        ),
       );
       Navigator.push(
         context,
@@ -248,4 +324,111 @@ class _MyProfilePage extends State<MyProfilePage> {
       );
     }
   }
+
+  Widget buildLinkMyItem(String videoUrl, String email) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Link(
+        uri: Uri.parse(videoUrl),
+        builder: (BuildContext ctx, FollowLink? openLink) {
+          return FutureBuilder<YouTubeVideo>(
+            future: fetchMyVideoDetails(videoUrl),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                final video = snapshot.data!;
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VideoPage(
+                          email: email,
+                          videoUrl: videoUrl,
+                          title: video.title,
+                          thumbnailUrl: video.thumbnailUrl,
+                          viewCount: video.viewCount,
+                          channelTitle: video.channelTitle,
+                          channelThumbnailUrl: video.channelThumbnailUrl,
+                        ),
+                      ),
+                    ).then((_) => _fetchData());
+                  },
+                  child: Image.network(
+                    video.thumbnailUrl,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                );
+              }
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Future<YouTubeVideo> fetchMyVideoDetails(String videoUrl) async {
+    final videoId = videoUrl.split('v=')[1];
+    const apiKey = 'AIzaSyCpJIzIv27HzCXJ-Gr7xDyia3N5s-jFaIw';
+    final apiUrl =
+        'https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=$videoId&key=$apiKey';
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final snippet = data['items'][0]['snippet'];
+      final statistics = data['items'][0]['statistics'];
+      final channelId = snippet['channelId'];
+
+      final channelApiUrl =
+          'https://www.googleapis.com/youtube/v3/channels?part=snippet&id=$channelId&key=$apiKey';
+      final channelResponse = await http.get(Uri.parse(channelApiUrl));
+
+      if (channelResponse.statusCode == 200) {
+        final channelData = json.decode(channelResponse.body);
+        final channelSnippet = channelData['items'][0]['snippet'];
+        final channelTitle = channelSnippet['title'];
+        final channelThumbnailUrl = channelSnippet['thumbnails']['high']['url'];
+
+        final title = snippet['title'];
+        final thumbnailUrl = snippet['thumbnails']['high']['url'];
+        final viewCount = statistics['viewCount'];
+
+        final formattedViewCount =
+            NumberFormat('#,###').format(int.parse(viewCount));
+
+        return YouTubeVideo(
+          title: title,
+          thumbnailUrl: thumbnailUrl,
+          viewCount: formattedViewCount,
+          channelTitle: channelTitle,
+          channelThumbnailUrl: channelThumbnailUrl,
+        );
+      } else {
+        throw Exception('Failed to load video details');
+      }
+    } else {
+      throw Exception('Failed to load video details');
+    }
+  }
+}
+
+class YouTubeVideo {
+  final String title;
+  final String thumbnailUrl;
+  final String viewCount;
+  final String channelTitle;
+  final String channelThumbnailUrl;
+
+  YouTubeVideo({
+    required this.title,
+    required this.thumbnailUrl,
+    required this.viewCount,
+    required this.channelTitle,
+    required this.channelThumbnailUrl,
+  });
 }

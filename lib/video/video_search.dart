@@ -17,6 +17,7 @@ class VideoSearch extends StatelessWidget {
       home: const VideoSearchPage(
         searchQuery: '',
         email: '',
+        id: '',
       ),
     );
   }
@@ -27,9 +28,12 @@ class VideoSearchPage extends StatefulWidget {
     Key? key,
     required this.searchQuery,
     required this.email,
+    required this.id,
   }) : super(key: key);
+
   final String searchQuery;
   final String email;
+  final String id;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -114,6 +118,7 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
                     builder: (context) => VideoSearchPage(
                       searchQuery: query,
                       email: widget.email,
+                      id: widget.id,
                     ),
                   ),
                 );
@@ -144,6 +149,7 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
                           MaterialPageRoute(
                             builder: (context) => MyProfilePage(
                               email: widget.email,
+                              id: widget.id,
                             ),
                           ),
                         );
@@ -186,7 +192,7 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
     List<String> urls = [];
     List<String> filteredUrls = [];
 
-    for (var url in subjectVideoUrls.values) {
+    for (var url in (subjectVideoUrls.values).map((list) => list[0]).toList()) {
       urls.addAll(url);
     }
 

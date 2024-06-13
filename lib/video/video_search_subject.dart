@@ -18,6 +18,7 @@ class VideoSearchSubject extends StatelessWidget {
         searchQuery: '',
         subject: '',
         email: '',
+        id: '',
       ),
     );
   }
@@ -29,10 +30,13 @@ class VideoSearchSubjectPage extends StatefulWidget {
     required this.searchQuery,
     required this.subject,
     required this.email,
+    required this.id,
   }) : super(key: key);
+
   final String searchQuery;
   final String subject;
   final String email;
+  final String id;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -118,6 +122,7 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
                       searchQuery: query,
                       subject: widget.subject,
                       email: widget.email,
+                      id: widget.id,
                     ),
                   ),
                 );
@@ -148,6 +153,7 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
                           MaterialPageRoute(
                             builder: (context) => MyProfilePage(
                               email: widget.email,
+                              id: widget.id,
                             ),
                           ),
                         );
@@ -189,7 +195,9 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
   Future<List<String>> _filterVideos(String query, int startIndex) async {
     List<String> filteredUrls = [];
 
-    final urls = subjectVideoUrls[widget.subject] ?? [];
+    final urls = (subjectVideoUrls[widget.subject] ?? [])
+        .map((list) => list[0])
+        .toList();
 
     for (var url in urls.skip(startIndex)) {
       try {

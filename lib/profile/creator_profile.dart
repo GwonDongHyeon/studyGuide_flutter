@@ -6,15 +6,22 @@ class CreatorProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: CreatorProfilePage(channelTitle: ''),
+      home: CreatorProfilePage(
+        channelThumbnailUrl: '',
+        channelTitle: '',
+      ),
     );
   }
 }
 
 class CreatorProfilePage extends StatelessWidget {
-  const CreatorProfilePage({Key? key, required this.channelTitle})
-      : super(key: key);
+  const CreatorProfilePage({
+    Key? key,
+    required this.channelThumbnailUrl,
+    required this.channelTitle,
+  }) : super(key: key);
 
+  final String channelThumbnailUrl;
   final String channelTitle;
 
   @override
@@ -25,23 +32,22 @@ class CreatorProfilePage extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 80, 180, 220),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CircleAvatar(
-              radius: 50,
+              radius: 80,
               backgroundColor: Colors.grey[300],
-              child: const Icon(
-                Icons.person,
-                size: 50,
-                color: Colors.white,
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(channelThumbnailUrl),
+                radius: 80,
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Creator Name',
-              style: TextStyle(
+            Text(
+              channelTitle,
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
