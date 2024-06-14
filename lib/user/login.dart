@@ -64,6 +64,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            const SizedBox(height: 40),
             ClipRRect(
               borderRadius: BorderRadius.circular(60.0),
               child: Image.asset('assets/images/studyGuide_logo.png'),

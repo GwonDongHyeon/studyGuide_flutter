@@ -121,20 +121,42 @@ class _VideoSubjectPage extends State<VideoSubjectPage> {
   Widget _buildSubjectButton(BuildContext context, String subject) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => VideoListPage(
-                subject: subject,
-                email: widget.email,
-                id: widget.id,
+      child: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color:
+                      const Color.fromARGB(255, 190, 190, 190).withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                ),
+              ],
+            ),
+            child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VideoListPage(
+                      subject: subject,
+                      email: widget.email,
+                      id: widget.id,
+                    ),
+                  ),
+                );
+              },
+              child: Image.asset(
+                'assets/images/$subject.png',
+                fit: BoxFit.cover,
+                height: 140,
+                width: 140,
               ),
             ),
-          );
-        },
-        child: Text(subject, style: const TextStyle(fontSize: 18)),
+          ),
+          Text(subject),
+        ],
       ),
     );
   }

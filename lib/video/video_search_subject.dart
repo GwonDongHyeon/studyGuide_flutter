@@ -138,7 +138,7 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
               icon: const Icon(Icons.arrow_back),
             ),
             const Spacer(),
-            Text(widget.email),
+            Text(widget.id),
             const SizedBox(width: 5),
             Padding(
               padding: const EdgeInsets.only(right: 20),

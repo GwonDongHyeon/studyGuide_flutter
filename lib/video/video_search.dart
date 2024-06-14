@@ -134,7 +134,7 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
               icon: const Icon(Icons.arrow_back),
             ),
             const Spacer(),
-            Text(widget.email),
+            Text(widget.id),
             const SizedBox(width: 5),
             Padding(
               padding: const EdgeInsets.only(right: 20),
@@ -192,9 +192,11 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
     List<String> urls = [];
     List<String> filteredUrls = [];
 
-    for (var url in (subjectVideoUrls.values).map((list) => list[0]).toList()) {
-      urls.addAll(url);
-    }
+    subjectVideoUrls.forEach((subject, videos) {
+      for (var video in videos) {
+        urls.add(video[0]);
+      }
+    });
 
     for (var url in urls.skip(startIndex)) {
       try {

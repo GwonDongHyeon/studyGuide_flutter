@@ -76,12 +76,16 @@ class _MyProfileVideoListPage extends State<MyProfileVideoListPage> {
       body: Column(
         children: [
           Expanded(
-            child: GridView.count(
-              crossAxisCount: 2,
-              children: savedVideos
-                  .map((url) => buildLinkItem(url, widget.email))
-                  .toList(),
-            ),
+            child: savedVideos.isEmpty
+                ? const Center(
+                    child: Text('비어있습니다'),
+                  )
+                : GridView.count(
+                    crossAxisCount: 2,
+                    children: savedVideos
+                        .map((url) => buildLinkItem(url, widget.email))
+                        .toList(),
+                  ),
           ),
         ],
       ),

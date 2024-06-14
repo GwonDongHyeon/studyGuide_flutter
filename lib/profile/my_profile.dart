@@ -165,25 +165,25 @@ class _MyProfilePage extends State<MyProfilePage> {
                 ),
                 const SizedBox(height: 8),
                 SizedBox(
-                  height: 95,
-                  child: savedVideos.isEmpty
-                      ? const Center(child: Text('비어있습니다'))
-                      : ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: savedVideos.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: const EdgeInsets.only(right: 8),
-                              width: 160,
-                              child: Card(
-                                child: Center(
-                                  child: buildLinkMyItem(
-                                      savedVideos[index], widget.email),
-                                ),
-                              ),
-                            );
-                          },
+                  height: 100,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: savedVideos.isEmpty ? 1 : savedVideos.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        width: 160,
+                        child: Card(
+                          child: Center(
+                            child: savedVideos.isEmpty
+                                ? const Text('비어있습니다')
+                                : buildLinkMyItem(
+                                    savedVideos[index], widget.email),
+                          ),
                         ),
+                      );
+                    },
+                  ),
                 ),
                 const SizedBox(height: 24),
                 Column(
@@ -216,17 +216,20 @@ class _MyProfilePage extends State<MyProfilePage> {
                     ),
                     const SizedBox(height: 8),
                     SizedBox(
-                      height: 120,
+                      height: 100,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: savedVideos.length,
+                        itemCount: savedVideos.isEmpty ? 1 : savedVideos.length,
                         itemBuilder: (context, index) {
                           return Container(
                             margin: const EdgeInsets.only(right: 8),
                             width: 160,
                             child: Card(
                               child: Center(
-                                child: Text(savedVideos[index]),
+                                child: savedVideos.isEmpty
+                                    ? const Text('비어있습니다')
+                                    : buildLinkMyItem(
+                                        savedVideos[index], widget.email),
                               ),
                             ),
                           );
