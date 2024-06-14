@@ -4,14 +4,14 @@ import 'package:studyguide_flutter/url/video_parse.dart';
 import 'package:studyguide_flutter/profile/creator_profile.dart';
 import 'package:studyguide_flutter/video/video_player.dart';
 
-class YouTubeVideo {
+class VideoDetail {
   final String title;
   final String thumbnailUrl;
   final String viewCount;
   final String channelTitle;
   final String channelThumbnailUrl;
 
-  YouTubeVideo({
+  VideoDetail({
     required this.title,
     required this.thumbnailUrl,
     required this.viewCount,
@@ -26,7 +26,7 @@ Widget buildLinkItem(String videoUrl, String email) {
     child: Link(
       uri: Uri.parse(videoUrl),
       builder: (BuildContext ctx, FollowLink? openLink) {
-        return FutureBuilder<YouTubeVideo>(
+        return FutureBuilder<VideoDetail>(
           future: fetchVideoDetails(videoUrl),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -89,7 +89,7 @@ Widget buildLinkItem(String videoUrl, String email) {
                                   builder: (context) => CreatorProfilePage(
                                       channelThumbnailUrl:
                                           video.channelThumbnailUrl,
-                                      channelTitle: video.channelTitle),
+                                      creatorName: video.channelTitle),
                                 ),
                               );
                             },

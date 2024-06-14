@@ -109,7 +109,7 @@ class _VideoSubjectPage extends State<VideoSubjectPage> {
                 _buildSubjectButton(context, '과학탐구'),
                 _buildSubjectButton(context, '한국사'),
                 _buildSubjectButton(context, '공부법'),
-                _buildSubjectButton(context, '동기부여'),
+                _buildSubjectButton(context, '동기부여&공부자극'),
               ],
             ),
           ),

@@ -3,12 +3,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:studyguide_flutter/api/api.dart';
 import 'package:studyguide_flutter/profile/my_profile_video.dart';
-import 'package:studyguide_flutter/url/video_url.dart';
 import 'package:studyguide_flutter/user/login.dart';
 import 'package:studyguide_flutter/video/video_player.dart';
 import 'package:url_launcher/link.dart';
@@ -151,11 +149,10 @@ class _MyProfilePage extends State<MyProfilePage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => MyProfileVideoListPage(
-                              myVideoUrls: savedVideos,
                               email: widget.email,
                             ),
                           ),
-                        );
+                        ).then((_) => _fetchData());
                       },
                       child: const Text(
                         '전체 보기 >>',
@@ -331,7 +328,7 @@ class _MyProfilePage extends State<MyProfilePage> {
       child: Link(
         uri: Uri.parse(videoUrl),
         builder: (BuildContext ctx, FollowLink? openLink) {
-          return FutureBuilder<YouTubeVideo>(
+          return FutureBuilder<VideoDetail>(
             future: fetchMyVideoDetails(videoUrl),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -371,7 +368,7 @@ class _MyProfilePage extends State<MyProfilePage> {
     );
   }
 
-  Future<YouTubeVideo> fetchMyVideoDetails(String videoUrl) async {
+  Future<VideoDetail> fetchMyVideoDetails(String videoUrl) async {
     final videoId = videoUrl.split('v=')[1];
     const apiKey = 'AIzaSyCpJIzIv27HzCXJ-Gr7xDyia3N5s-jFaIw';
     final apiUrl =
@@ -401,7 +398,7 @@ class _MyProfilePage extends State<MyProfilePage> {
         final formattedViewCount =
             NumberFormat('#,###').format(int.parse(viewCount));
 
-        return YouTubeVideo(
+        return VideoDetail(
           title: title,
           thumbnailUrl: thumbnailUrl,
           viewCount: formattedViewCount,
@@ -417,14 +414,14 @@ class _MyProfilePage extends State<MyProfilePage> {
   }
 }
 
-class YouTubeVideo {
+class VideoDetail {
   final String title;
   final String thumbnailUrl;
   final String viewCount;
   final String channelTitle;
   final String channelThumbnailUrl;
 
-  YouTubeVideo({
+  VideoDetail({
     required this.title,
     required this.thumbnailUrl,
     required this.viewCount,

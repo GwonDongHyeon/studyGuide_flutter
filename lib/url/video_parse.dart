@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:studyguide_flutter/url/video_url.dart';
 
-Future<YouTubeVideo> fetchVideoDetails(String videoUrl) async {
+Future<VideoDetail> fetchVideoDetails(String videoUrl) async {
   final videoId = videoUrl.split('v=')[1];
   const apiKey = 'AIzaSyCpJIzIv27HzCXJ-Gr7xDyia3N5s-jFaIw';
   final apiUrl =
@@ -33,7 +33,7 @@ Future<YouTubeVideo> fetchVideoDetails(String videoUrl) async {
       final formattedViewCount =
           NumberFormat('#,###').format(int.parse(viewCount));
 
-      return YouTubeVideo(
+      return VideoDetail(
         title: title,
         thumbnailUrl: thumbnailUrl,
         viewCount: formattedViewCount,

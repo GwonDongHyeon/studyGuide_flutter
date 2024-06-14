@@ -129,6 +129,7 @@ class _VideoPage extends State<VideoPage> {
       ),
       builder: (context, player) => Scaffold(
         appBar: AppBar(
+          title: const Text('영상 보기'),
           backgroundColor: const Color.fromARGB(255, 80, 180, 220),
         ),
         body: ListView(
@@ -159,7 +160,7 @@ class _VideoPage extends State<VideoPage> {
                             MaterialPageRoute(
                               builder: (context) => CreatorProfilePage(
                                 channelThumbnailUrl: widget.channelThumbnailUrl,
-                                channelTitle: widget.channelTitle,
+                                creatorName: widget.channelTitle,
                               ),
                             ),
                           );

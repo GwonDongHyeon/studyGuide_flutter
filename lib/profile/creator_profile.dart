@@ -8,7 +8,7 @@ class CreatorProfile extends StatelessWidget {
     return const MaterialApp(
       home: CreatorProfilePage(
         channelThumbnailUrl: '',
-        channelTitle: '',
+        creatorName: '',
       ),
     );
   }
@@ -18,11 +18,11 @@ class CreatorProfilePage extends StatelessWidget {
   const CreatorProfilePage({
     Key? key,
     required this.channelThumbnailUrl,
-    required this.channelTitle,
+    required this.creatorName,
   }) : super(key: key);
 
   final String channelThumbnailUrl;
-  final String channelTitle;
+  final String creatorName;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class CreatorProfilePage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              channelTitle,
+              creatorName,
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
