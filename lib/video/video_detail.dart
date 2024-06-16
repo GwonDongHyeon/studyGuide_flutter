@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:studyguide_flutter/url/video_url.dart';
+import 'package:studyguide_flutter/video/video_list_build.dart';
 
 Future<VideoDetail> fetchVideoDetails(String videoUrl) async {
   final videoId = videoUrl.split('v=')[1];

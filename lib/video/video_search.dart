@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:studyguide_flutter/profile/my_profile.dart';
-import 'package:studyguide_flutter/url/video_url_list.dart';
-import 'package:studyguide_flutter/url/video_parse.dart';
-import 'package:studyguide_flutter/url/video_url.dart';
+import 'package:studyguide_flutter/video/video_url_list.dart';
+import 'package:studyguide_flutter/video/video_detail.dart';
+import 'package:studyguide_flutter/video/video_list_build.dart';
 
 class VideoSearch extends StatelessWidget {
   const VideoSearch({Key? key}) : super(key: key);
@@ -42,6 +42,7 @@ class VideoSearchPage extends StatefulWidget {
 
 class _VideoSearchPageState extends State<VideoSearchPage> {
   List<String> filteredVideos = [];
+  List<String> filteredCreators = [];
   final int _currentMax = 8;
   int skipIndex = 0;
   late ScrollController _scrollController;
@@ -79,6 +80,39 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
         _isLoading = false;
       });
     }
+  }
+
+  Future<List<String>> _filterVideos(String query, int startIndex) async {
+    List<String> urls = [];
+    List<String> creators = [];
+    List<String> filteredUrls = [];
+
+    subjectVideoUrls.forEach((subject, videos) {
+      for (var video in videos) {
+        urls.add(video[0]);
+        creators.add(video[1]);
+      }
+    });
+
+    for (var url in urls.skip(startIndex)) {
+      try {
+        final videoDetails = await fetchVideoDetails(url);
+        startIndex++;
+        skipIndex = startIndex;
+        if (videoDetails.title.contains(query) ||
+            videoDetails.channelTitle.contains(query) ||
+            creators[startIndex - 1].contains(query)) {
+          filteredUrls.add(url);
+          filteredCreators.add(creators[startIndex - 1]);
+          if (filteredUrls.length % _currentMax == 0) {
+            return filteredUrls;
+          }
+        }
+      } catch (e) {
+        //next url
+      }
+    }
+    return filteredUrls;
   }
 
   void _scrollListener() {
@@ -170,12 +204,20 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
             children: [
               filteredVideos.isEmpty && !_isLoading
                   ? const Center(child: Text('No videos found'))
-                  : GridView.count(
+                  : GridView.builder(
                       controller: _scrollController,
-                      crossAxisCount: 2,
-                      children: filteredVideos
-                          .map((url) => buildLinkItem(url, widget.email))
-                          .toList(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                      ),
+                      itemCount: filteredVideos.length,
+                      itemBuilder: (context, index) {
+                        return buildLinkItem(
+                          filteredVideos[index],
+                          filteredCreators[index],
+                          widget.email,
+                        );
+                      },
                     ),
               if (_isLoading)
                 const Center(
@@ -186,34 +228,5 @@ class _VideoSearchPageState extends State<VideoSearchPage> {
         )
       ]),
     );
-  }
-
-  Future<List<String>> _filterVideos(String query, int startIndex) async {
-    List<String> urls = [];
-    List<String> filteredUrls = [];
-
-    subjectVideoUrls.forEach((subject, videos) {
-      for (var video in videos) {
-        urls.add(video[0]);
-      }
-    });
-
-    for (var url in urls.skip(startIndex)) {
-      try {
-        final videoDetails = await fetchVideoDetails(url);
-        startIndex++;
-        skipIndex = startIndex;
-        if (videoDetails.title.contains(query) ||
-            videoDetails.channelTitle.contains(query)) {
-          filteredUrls.add(url);
-          if (filteredUrls.length % _currentMax == 0) {
-            return filteredUrls;
-          }
-        }
-      } catch (e) {
-        //next url
-      }
-    }
-    return filteredUrls;
   }
 }

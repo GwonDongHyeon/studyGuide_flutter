@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:studyguide_flutter/profile/my_profile.dart';
-import 'package:studyguide_flutter/url/video_url_list.dart';
-import 'package:studyguide_flutter/url/video_parse.dart';
-import 'package:studyguide_flutter/url/video_url.dart';
+import 'package:studyguide_flutter/video/video_url_list.dart';
+import 'package:studyguide_flutter/video/video_detail.dart';
+import 'package:studyguide_flutter/video/video_list_build.dart';
 
 class VideoSearchSubject extends StatelessWidget {
   const VideoSearchSubject({Key? key}) : super(key: key);
@@ -45,6 +45,7 @@ class VideoSearchSubjectPage extends StatefulWidget {
 
 class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
   List<String> filteredVideos = [];
+  List<String> filteredCreators = [];
   late ScrollController _scrollController;
   final int _currentMax = 8;
   int skipIndex = 0;
@@ -174,12 +175,20 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
             children: [
               filteredVideos.isEmpty && !_isLoading
                   ? const Center(child: Text('No videos found'))
-                  : GridView.count(
+                  : GridView.builder(
                       controller: _scrollController,
-                      crossAxisCount: 2,
-                      children: filteredVideos
-                          .map((url) => buildLinkItem(url, widget.email))
-                          .toList(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                      ),
+                      itemCount: filteredVideos.length,
+                      itemBuilder: (context, index) {
+                        return buildLinkItem(
+                          filteredVideos[index],
+                          filteredCreators[index],
+                          widget.email,
+                        );
+                      },
                     ),
               if (_isLoading)
                 const Center(
@@ -198,6 +207,9 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
     final urls = (subjectVideoUrls[widget.subject] ?? [])
         .map((list) => list[0])
         .toList();
+    final creators = (subjectVideoUrls[widget.subject] ?? [])
+        .map((list) => list[1])
+        .toList();
 
     for (var url in urls.skip(startIndex)) {
       try {
@@ -205,8 +217,10 @@ class _VideoSearchSubjectPageState extends State<VideoSearchSubjectPage> {
         startIndex++;
         skipIndex = startIndex;
         if (videoDetails.title.contains(query) ||
-            videoDetails.channelTitle.contains(query)) {
+            videoDetails.channelTitle.contains(query) ||
+            creators[startIndex - 1].contains(query)) {
           filteredUrls.add(url);
+          filteredCreators.add(creators[startIndex - 1]);
           if (filteredUrls.length % _currentMax == 0) {
             return filteredUrls;
           }

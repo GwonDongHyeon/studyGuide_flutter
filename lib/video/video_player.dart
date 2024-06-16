@@ -17,6 +17,7 @@ class VideoPlayer extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: VideoPage(
         email: '',
+        urlCreator: '',
         videoUrl: '',
         title: '',
         thumbnailUrl: '',
@@ -32,6 +33,7 @@ class VideoPage extends StatefulWidget {
   const VideoPage({
     super.key,
     required this.email,
+    required this.urlCreator,
     required this.videoUrl,
     required this.title,
     required this.thumbnailUrl,
@@ -41,6 +43,7 @@ class VideoPage extends StatefulWidget {
   });
 
   final String email;
+  final String urlCreator;
   final String videoUrl;
   final String title;
   final String thumbnailUrl;
@@ -61,13 +64,7 @@ class _VideoPage extends State<VideoPage> {
   void initState() {
     super.initState();
     _initializePlayer();
-    _fetchData();
-  }
-
-  void _checkIfSaved() {
-    setState(() {
-      _isSaved = savedVideos.contains(widget.videoUrl);
-    });
+    _fetchDataUrl();
   }
 
   Future<void> _initializePlayer() async {
@@ -93,21 +90,33 @@ class _VideoPage extends State<VideoPage> {
     }
   }
 
-  Future<void> _fetchData() async {
+  Future<void> _fetchDataUrl() async {
     try {
       final response = await http.post(
-        Uri.parse(API.output),
+        Uri.parse(API.urlOutput),
         body: {
           'email': widget.email,
         },
       );
       if (response.statusCode == 200) {
-        savedVideos = List<String>.from(json.decode(response.body));
+        final responseData = json.decode(response.body);
+        setState(() {
+          savedVideos = [];
+          for (var item in responseData) {
+            savedVideos.add(item['video_url']);
+          }
+        });
         _checkIfSaved();
       }
     } catch (e) {
       print(e);
     }
+  }
+
+  void _checkIfSaved() {
+    setState(() {
+      _isSaved = savedVideos.contains(widget.videoUrl);
+    });
   }
 
   @override
@@ -155,12 +164,14 @@ class _VideoPage extends State<VideoPage> {
                       const SizedBox(width: 3),
                       InkWell(
                         onTap: () {
+                          _controller.pause();
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => CreatorProfilePage(
+                                email: widget.email,
                                 channelThumbnailUrl: widget.channelThumbnailUrl,
-                                creatorName: widget.channelTitle,
+                                urlCreator: widget.urlCreator,
                               ),
                             ),
                           );
@@ -183,7 +194,11 @@ class _VideoPage extends State<VideoPage> {
                           if (_isSaved) {
                             deleteURLForUser(widget.email, widget.videoUrl);
                           } else {
-                            saveURLForUser(widget.email, widget.videoUrl);
+                            saveURLForUser(
+                              widget.email,
+                              widget.videoUrl,
+                              widget.urlCreator,
+                            );
                           }
                           setState(() {
                             _isSaved = !_isSaved;
@@ -226,13 +241,15 @@ class _VideoPage extends State<VideoPage> {
     );
   }
 
-  Future<void> saveURLForUser(String email, String url) async {
+  Future<void> saveURLForUser(
+      String email, String videoUrl, String urlCreator) async {
     try {
       var response = await http.post(
-        Uri.parse(API.input),
+        Uri.parse(API.urlInput),
         body: {
           'email': email,
-          'video_url': url,
+          'video_url': videoUrl,
+          'video_creator': urlCreator,
         },
       );
 
@@ -249,13 +266,13 @@ class _VideoPage extends State<VideoPage> {
     }
   }
 
-  Future<void> deleteURLForUser(String email, String url) async {
+  Future<void> deleteURLForUser(String email, String videoUrl) async {
     try {
       var response = await http.post(
-        Uri.parse(API.delete),
+        Uri.parse(API.urlDelete),
         body: {
           'email': email,
-          'video_url': url,
+          'video_url': videoUrl,
         },
       );
 

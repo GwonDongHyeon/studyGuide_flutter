@@ -132,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(width: 2),
                   const Text(
-                    '구글로 로그인',
+                    '구글 로그인',
                     style: TextStyle(fontSize: 18),
                   ),
                 ],

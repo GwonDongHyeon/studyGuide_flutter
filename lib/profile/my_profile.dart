@@ -4,9 +4,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:studyguide_flutter/api/api.dart';
-import 'package:studyguide_flutter/profile/my_profile_video.dart';
+import 'package:studyguide_flutter/profile/creator_list.dart';
+import 'package:studyguide_flutter/profile/creator_profile.dart';
+import 'package:studyguide_flutter/profile/my_video_list.dart';
+import 'package:studyguide_flutter/profile/my_video_detail.dart';
 import 'package:studyguide_flutter/user/login.dart';
 import 'package:studyguide_flutter/video/video_player.dart';
 import 'package:url_launcher/link.dart';
@@ -45,25 +47,51 @@ class _MyProfilePage extends State<MyProfilePage> {
   File? image;
   final picker = ImagePicker();
   List<String> savedVideos = [];
+  List<String> creatorNames = [];
+  List<String> savedCreators = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchData();
+    _fetchDataUrl();
+    _fetchDataCreator();
   }
 
-  Future<void> _fetchData() async {
+  Future<void> _fetchDataUrl() async {
     try {
       final response = await http.post(
-        Uri.parse(API.output),
+        Uri.parse(API.urlOutput),
         body: {
           'email': widget.email,
         },
       );
       if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
         setState(() {
-          savedVideos = List<String>.from(json.decode(response.body));
+          savedVideos = [];
+          creatorNames = [];
+          for (var item in responseData) {
+            savedVideos.add(item['video_url']);
+            creatorNames.add(item['video_creator']);
+          }
         });
+        print(savedVideos);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> _fetchDataCreator() async {
+    try {
+      final response = await http.post(
+        Uri.parse(API.creatorOutput),
+        body: {
+          'email': widget.email,
+        },
+      );
+      if (response.statusCode == 200) {
+        savedCreators = List<String>.from(json.decode(response.body));
       }
     } catch (e) {
       print(e);
@@ -152,7 +180,7 @@ class _MyProfilePage extends State<MyProfilePage> {
                               email: widget.email,
                             ),
                           ),
-                        ).then((_) => _fetchData());
+                        ).then((_) => {_fetchDataUrl(), _fetchDataCreator()});
                       },
                       child: const Text(
                         '전체 보기 >>',
@@ -178,7 +206,10 @@ class _MyProfilePage extends State<MyProfilePage> {
                             child: savedVideos.isEmpty
                                 ? const Text('비어있습니다')
                                 : buildLinkMyItem(
-                                    savedVideos[index], widget.email),
+                                    savedVideos[index],
+                                    creatorNames[index],
+                                    widget.email,
+                                  ),
                           ),
                         ),
                       );
@@ -203,7 +234,16 @@ class _MyProfilePage extends State<MyProfilePage> {
                         const Spacer(),
                         TextButton(
                           onPressed: () {
-                            //
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MyProfileCreatorListPage(
+                                  email: widget.email,
+                                ),
+                              ),
+                            ).then(
+                              (_) => {_fetchDataUrl(), _fetchDataCreator()},
+                            );
                           },
                           child: const Text(
                             '전체 보기 >>',
@@ -219,18 +259,44 @@ class _MyProfilePage extends State<MyProfilePage> {
                       height: 100,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: savedVideos.isEmpty ? 1 : savedVideos.length,
+                        itemCount:
+                            savedCreators.isEmpty ? 1 : savedCreators.length,
                         itemBuilder: (context, index) {
                           return Container(
                             margin: const EdgeInsets.only(right: 8),
                             width: 160,
                             child: Card(
                               child: Center(
-                                child: savedVideos.isEmpty
-                                    ? const Text('비어있습니다')
-                                    : buildLinkMyItem(
-                                        savedVideos[index], widget.email),
-                              ),
+                                  child: savedCreators.isEmpty
+                                      ? const Text('비어있습니다')
+                                      : Expanded(
+                                          child: TextButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CreatorProfilePage(
+                                                    email: widget.email,
+                                                    channelThumbnailUrl: '',
+                                                    urlCreator:
+                                                        savedCreators[index],
+                                                  ),
+                                                ),
+                                              ).then(
+                                                (value) => {
+                                                  _fetchDataUrl(),
+                                                  _fetchDataCreator()
+                                                },
+                                              );
+                                            },
+                                            child: Text(
+                                              savedCreators[index],
+                                              style: const TextStyle(
+                                                  color: Colors.black),
+                                            ),
+                                          ),
+                                        )),
                             ),
                           );
                         },
@@ -325,7 +391,7 @@ class _MyProfilePage extends State<MyProfilePage> {
     }
   }
 
-  Widget buildLinkMyItem(String videoUrl, String email) {
+  Widget buildLinkMyItem(String videoUrl, String urlCreator, String email) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Link(
@@ -347,6 +413,7 @@ class _MyProfilePage extends State<MyProfilePage> {
                       MaterialPageRoute(
                         builder: (context) => VideoPage(
                           email: email,
+                          urlCreator: urlCreator,
                           videoUrl: videoUrl,
                           title: video.title,
                           thumbnailUrl: video.thumbnailUrl,
@@ -355,7 +422,9 @@ class _MyProfilePage extends State<MyProfilePage> {
                           channelThumbnailUrl: video.channelThumbnailUrl,
                         ),
                       ),
-                    ).then((_) => _fetchData());
+                    ).then(
+                      (_) => {_fetchDataUrl(), _fetchDataCreator()},
+                    );
                   },
                   child: Image.network(
                     video.thumbnailUrl,
@@ -370,65 +439,4 @@ class _MyProfilePage extends State<MyProfilePage> {
       ),
     );
   }
-
-  Future<VideoDetail> fetchMyVideoDetails(String videoUrl) async {
-    final videoId = videoUrl.split('v=')[1];
-    const apiKey = 'AIzaSyCpJIzIv27HzCXJ-Gr7xDyia3N5s-jFaIw';
-    final apiUrl =
-        'https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=$videoId&key=$apiKey';
-    final response = await http.get(Uri.parse(apiUrl));
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final snippet = data['items'][0]['snippet'];
-      final statistics = data['items'][0]['statistics'];
-      final channelId = snippet['channelId'];
-
-      final channelApiUrl =
-          'https://www.googleapis.com/youtube/v3/channels?part=snippet&id=$channelId&key=$apiKey';
-      final channelResponse = await http.get(Uri.parse(channelApiUrl));
-
-      if (channelResponse.statusCode == 200) {
-        final channelData = json.decode(channelResponse.body);
-        final channelSnippet = channelData['items'][0]['snippet'];
-        final channelTitle = channelSnippet['title'];
-        final channelThumbnailUrl = channelSnippet['thumbnails']['high']['url'];
-
-        final title = snippet['title'];
-        final thumbnailUrl = snippet['thumbnails']['high']['url'];
-        final viewCount = statistics['viewCount'];
-
-        final formattedViewCount =
-            NumberFormat('#,###').format(int.parse(viewCount));
-
-        return VideoDetail(
-          title: title,
-          thumbnailUrl: thumbnailUrl,
-          viewCount: formattedViewCount,
-          channelTitle: channelTitle,
-          channelThumbnailUrl: channelThumbnailUrl,
-        );
-      } else {
-        throw Exception('Failed to load video details');
-      }
-    } else {
-      throw Exception('Failed to load video details');
-    }
-  }
-}
-
-class VideoDetail {
-  final String title;
-  final String thumbnailUrl;
-  final String viewCount;
-  final String channelTitle;
-  final String channelThumbnailUrl;
-
-  VideoDetail({
-    required this.title,
-    required this.thumbnailUrl,
-    required this.viewCount,
-    required this.channelTitle,
-    required this.channelThumbnailUrl,
-  });
 }

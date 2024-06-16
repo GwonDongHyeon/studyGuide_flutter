@@ -90,18 +90,26 @@ class _SignupPageState extends State<SignupPage> {
               },
               obscureText: true,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             ElevatedButton(
               onPressed: _signUp,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 80, 180, 220),
+                fixedSize: const Size(200, 40),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
               ),
-              child: const Text('회원가입'),
+              child: const Text(
+                '회원가입',
+                style: TextStyle(fontSize: 18),
+              ),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('로그인',
-                  style: TextStyle(color: Color.fromARGB(255, 80, 180, 220))),
+              child: const Text(
+                '로그인',
+                style: TextStyle(color: Color.fromARGB(255, 80, 180, 220)),
+              ),
             ),
           ],
         ),

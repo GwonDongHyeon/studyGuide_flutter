@@ -8,8 +8,6 @@ Future<void> loginWithGoogle(BuildContext context) async {
   try {
     final googleSignIn = GoogleSignIn();
 
-    await googleSignIn.signOut();
-
     final account = await googleSignIn.signIn();
 
     if (account != null) {

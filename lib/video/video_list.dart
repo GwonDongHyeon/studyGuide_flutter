@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:studyguide_flutter/url/video_url_list.dart';
+import 'package:studyguide_flutter/video/video_url_list.dart';
 import 'package:studyguide_flutter/video/video_search_subject.dart';
 import 'package:studyguide_flutter/profile/my_profile.dart';
-import 'package:studyguide_flutter/url/video_url.dart';
+import 'package:studyguide_flutter/video/video_list_build.dart';
 
 class VideoList extends StatelessWidget {
   const VideoList({super.key});
@@ -42,6 +42,7 @@ class VideoListPage extends StatefulWidget {
 
 class _VideoListPageState extends State<VideoListPage> {
   List<String> videoUrls = [];
+  List<String> urlCreators = [];
   final int _currentMax = 8;
   late ScrollController _scrollController;
   bool _hasMoreVideos = true;
@@ -67,8 +68,13 @@ class _VideoListPageState extends State<VideoListPage> {
     final allVideos = (subjectVideoUrls[widget.subject] ?? [])
         .map((list) => list[0])
         .toList();
+    final allCreators = (subjectVideoUrls[widget.subject] ?? [])
+        .map((list) => list[1])
+        .toList();
     setState(() {
-      videoUrls.addAll(allVideos.skip(videoUrls.length).take(_currentMax));
+      final startPoint = videoUrls.length;
+      videoUrls.addAll(allVideos.skip(startPoint).take(_currentMax));
+      urlCreators.addAll(allCreators.skip(startPoint).take(_currentMax));
     });
   }
 
@@ -157,12 +163,19 @@ class _VideoListPageState extends State<VideoListPage> {
             ],
           ),
           Expanded(
-            child: GridView.count(
+            child: GridView.builder(
               controller: _scrollController,
-              crossAxisCount: 2,
-              children: videoUrls
-                  .map((url) => buildLinkItem(url, widget.email))
-                  .toList(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
+              itemCount: videoUrls.length,
+              itemBuilder: (context, index) {
+                return buildLinkItem(
+                  videoUrls[index],
+                  urlCreators[index],
+                  widget.email,
+                );
+              },
             ),
           ),
         ],

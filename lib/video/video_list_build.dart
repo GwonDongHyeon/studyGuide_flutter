@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/link.dart';
-import 'package:studyguide_flutter/url/video_parse.dart';
+import 'package:studyguide_flutter/video/video_detail.dart';
 import 'package:studyguide_flutter/profile/creator_profile.dart';
 import 'package:studyguide_flutter/video/video_player.dart';
 
@@ -20,7 +20,7 @@ class VideoDetail {
   });
 }
 
-Widget buildLinkItem(String videoUrl, String email) {
+Widget buildLinkItem(String videoUrl, String urlCreators, String email) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Link(
@@ -42,6 +42,7 @@ Widget buildLinkItem(String videoUrl, String email) {
                     MaterialPageRoute(
                       builder: (context) => VideoPage(
                         email: email,
+                        urlCreator: urlCreators,
                         videoUrl: videoUrl,
                         title: video.title,
                         thumbnailUrl: video.thumbnailUrl,
@@ -87,9 +88,10 @@ Widget buildLinkItem(String videoUrl, String email) {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => CreatorProfilePage(
+                                      email: email,
                                       channelThumbnailUrl:
                                           video.channelThumbnailUrl,
-                                      creatorName: video.channelTitle),
+                                      urlCreator: urlCreators),
                                 ),
                               );
                             },

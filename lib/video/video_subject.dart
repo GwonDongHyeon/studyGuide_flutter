@@ -127,10 +127,9 @@ class _VideoSubjectPage extends State<VideoSubjectPage> {
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color:
-                      const Color.fromARGB(255, 190, 190, 190).withOpacity(0.2),
+                  color: Colors.grey.withOpacity(0.2),
                   spreadRadius: 1,
-                  blurRadius: 5,
+                  blurRadius: 30,
                 ),
               ],
             ),
@@ -150,8 +149,8 @@ class _VideoSubjectPage extends State<VideoSubjectPage> {
               child: Image.asset(
                 'assets/images/$subject.png',
                 fit: BoxFit.cover,
-                height: 140,
-                width: 140,
+                height: 145,
+                width: 145,
               ),
             ),
           ),
